@@ -2,6 +2,10 @@
 
 This project is a simple Laravel application that allows you to manage your tasks.
 
+- Default credentials:
+  - Email: admin@admin.com
+  - Password: password
+
 ## Installation
 
 1. Clone the repository
