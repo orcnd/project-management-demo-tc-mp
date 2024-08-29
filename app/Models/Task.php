@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Project;
 
 /**
  * Task Model
@@ -19,5 +20,15 @@ class Task extends Model
     protected $fillable=[
         'name', 'description', 'project_id', 'status',
     ];
+
+    /**
+     * Summary of project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    function project():BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 
 }
