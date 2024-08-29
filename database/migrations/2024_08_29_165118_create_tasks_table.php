@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->integer('project_id');
-            $table->foreign('project_id')->references('id')->on('projects');
             $table->string('status')->default('todo');
             $table->timestamps();
         });
