@@ -21,28 +21,45 @@ function getApiHeaders(bearerToken, extraHeaders) {
 
 
 class Auth {
-    static login(email, password) {
+    static user;
+
+    static setToken(data) {
+        bearerToken=data.token;
+        Auth.user=data.user;
+        console.log(Auth.user);
+        localStorage.setItem('bearerToken', bearerToken);
+        localStorage.setItem('user', JSON.stringify(Auth.user));
+    }
+
+    static init() {
+        bearerToken=localStorage.getItem('bearerToken');
+        Auth.user=JSON.parse(localStorage.getItem('user'));
+    }
+
+    static login(email, password, callback) {
         fetch (apiUrl + '/login', {
             method: 'POST',
             headers: getApiHeaders(),
             body : JSON.stringify({
                 email: email,
                 password: password,
-                _token: csrfToken,
             })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                bearerToken=data.token;
-            } else {
-                console.error(data.message);
+                Auth.setToken(data);
             }
-            return data.message;
+            if (callback) {
+                callback(data);
+            }
         });
     }
 
     static logout() {
+        localStorage.removeItem('bearerToken');
+        localStorage.removeItem('user');
+        Auth.user=null;
         fetch (apiUrl + '/logout', {
             method: 'POST',
             headers: getApiHeaders(),
@@ -54,7 +71,6 @@ class Auth {
             } else {
                 console.error(data.message);
             }
-            return data.message;
         });
     }
 
@@ -72,12 +88,15 @@ class Auth {
         .then(data => {
             if (data.success) {
                 bearerToken=data.token;
+                return true;
             } else {
                 console.error(data.message);
             }
             return data.message;
         });
     }
+
+
 }
 
 
@@ -114,6 +133,22 @@ class Router {
  * @param {string} html
  */
 function view(title, html) {
+    if (Auth.user) {
+        console.log("drawMenu");
+        document.querySelectorAll('.loginButton').forEach((item) => {
+            item.style.display='none';
+        });
+        document.querySelectorAll('.logoutButton').forEach((item) => {
+            item.style.display='inline-block';
+        });
+    }else{
+        document.querySelectorAll('.loginButton').forEach((item) => {
+            item.style.display='inline-block';
+        });
+        document.querySelectorAll('.logoutButton').forEach((item) => {
+            item.style.display='none';
+        });
+    }
     document.title="Project Management - " + title;
     mainContainer.innerHTML=html;
 }
@@ -130,6 +165,7 @@ function revealPages() {
 
 //init router
 window.onload=function() {
+    Auth.init();
     Router.go('home');
 }
 </script>
