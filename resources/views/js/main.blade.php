@@ -83,14 +83,22 @@ class Auth {
 
 
 class Router {
+    static activeRoute;
     static routes={
         '404' : () => {
             console.error('404 Page not found');
-            mainContainer.innerHTML='<h1 class="text-center text-danger">404 Page not found</h1>';
+            mainContainer.innerHTML='<h1 class="text-center text-danger">404<br>Page not found</h1>';
             document.title='404 Route not found';
         },
     };
+    static set(route, callback) {
+        Router.routes[route]=callback;
+    }
     static go(route) {
+        if (Router.activeRoute && Router.activeRoute==route) {
+            return;
+        }
+        Router.activeRoute=route;
         if (route in Router.routes) {
             Router.routes[route]();
         } else {
@@ -100,5 +108,31 @@ class Router {
     }
 }
 
+/**
+ * Show a view
+ * @param {string} title
+ * @param {string} html
+ */
+function view(title, html) {
+    document.title="Project Management - " + title;
+    mainContainer.innerHTML=html;
+}
 
+/**
+ * Reveal all pages
+ */
+function revealPages() {
+    let a=document.querySelectorAll('.view-pages');
+    a.forEach((item) => {
+        item.style.display='block';
+    });
+}
 </script>
+
+<style>
+    .view-pages {
+        display: none;
+        margin:10px;
+        border:1px solid red;
+    }
+</style>
