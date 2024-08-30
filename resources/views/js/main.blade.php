@@ -127,6 +127,11 @@ function revealPages() {
         item.style.display='block';
     });
 }
+
+//init router
+window.onload=function() {
+    Router.go('home');
+}
 </script>
 
 <style>
