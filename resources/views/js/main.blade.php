@@ -26,9 +26,15 @@ class Auth {
     static setToken(data) {
         bearerToken=data.token;
         Auth.user=data.user;
-        console.log(Auth.user);
         localStorage.setItem('bearerToken', bearerToken);
         localStorage.setItem('user', JSON.stringify(Auth.user));
+    }
+
+    static clearToken() {
+        bearerToken=null;
+        Auth.user=null;
+        localStorage.removeItem('bearerToken');
+        localStorage.removeItem('user');
     }
 
     static init() {
@@ -49,6 +55,8 @@ class Auth {
         .then(data => {
             if (data.success) {
                 Auth.setToken(data);
+            }else{
+                console.error(data.message);
             }
             if (callback) {
                 callback(data);
@@ -56,7 +64,7 @@ class Auth {
         });
     }
 
-    static logout() {
+    static logout(callback) {
         localStorage.removeItem('bearerToken');
         localStorage.removeItem('user');
         Auth.user=null;
@@ -67,14 +75,17 @@ class Auth {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                bearerToken=null;
+                Auth.clearToken();
             } else {
                 console.error(data.message);
+            }
+            if (callback) {
+                callback(data);
             }
         });
     }
 
-    static register(name, email, password) {
+    static register(name, email, password, callback) {
         fetch (apiUrl + '/register', {
             method: 'POST',
             headers: getApiHeaders(),
@@ -87,12 +98,13 @@ class Auth {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                bearerToken=data.token;
-                return true;
+                Auth.setToken(data);
             } else {
                 console.error(data.message);
             }
-            return data.message;
+            if (callback) {
+                callback(data);
+            }
         });
     }
 
