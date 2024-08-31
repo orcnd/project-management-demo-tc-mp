@@ -85,7 +85,7 @@ class Auth {
         });
     }
 
-    static register(name, email, password, callback) {
+    static register(name, email, password, password_again, callback) {
         fetch (apiUrl + '/register', {
             method: 'POST',
             headers: getApiHeaders(),
@@ -93,6 +93,7 @@ class Auth {
                 name: name,
                 email: email,
                 password: password,
+                password_confirmation: password_again,
             })
         })
         .then(response => response.json())
