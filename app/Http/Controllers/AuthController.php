@@ -88,6 +88,9 @@ class AuthController extends Controller
         event(new Registered($user));
 
         $user->token = $user->createToken('auth_token')->plainTextToken;
+        $user->roles()->attach(
+            \App\Models\Role::where('title', 'user')->first()
+        );
 
         return response()->json(
             [
