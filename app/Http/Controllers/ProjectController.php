@@ -136,6 +136,8 @@ class ProjectController extends Controller
             || ($user->hasPermission('delete-project')
             && $project->user_id==$user->id)
         ) {
+            //delete tasks
+            $project->tasks()->delete();
             $project->delete();
             return response()->json(
                 [
