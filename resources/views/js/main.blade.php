@@ -19,6 +19,10 @@ function getApiHeaders(bearerToken, extraHeaders) {
     return apiHeaders;
 }
 
+function getApiHeadersWithAuth() {
+    return getApiHeaders(bearerToken);
+}
+
 
 class Auth {
     static user;
