@@ -1,6 +1,7 @@
 <div class="view-pages" id="projectView">
     <div class="contanier">
         <h1 class="projectView_name">Project</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModalTask">New Task</button>
         <p class="projectView_description">
         <div class="row projectView_tasks">
             <div class="col-md-4 todo">
@@ -47,7 +48,7 @@ async function drawProjects(projectId) {
                 html+='<div class="card-text">'+item.description+'</div>';
                 html+='<div class="card-status">'+item.status+'</div>';
                 html+='<a class="card-link edit-btn" href="#" onclick="editProjectTask(' + item.id +'); return false;">Edit</a>';
-                html+='<a class="card-link text-danger" href="#" onclick="Router.go(\'deleteTask\',' + item.id +'); return false;">Delete</a>';
+                html+='<a class="card-link text-danger" href="#" onclick="deleteProjectTask('+ item.id +'); return false;">Delete</a>';
                 html+='</div>';
                 html+='</div>';
                 document.querySelector('#projectView .projectView_tasks > .' + item.status + " > .list").innerHTML+=html;
@@ -104,4 +105,77 @@ function editTask(itemId, name, description, status) {
         drawProjects(activeProjectId);
     });
 }
+function hideModal(id) {
+    const modalDom = document.querySelector('#' + id);
+    const modal = new bootstrap.Modal(modalDom, {
+        backdrop: 'static'
+    });
+    modal.hide();
+    modal.close();
+}
+function createTask() {
+    hideModal('newModalTask');
+
+    let name=document.querySelector('#newTaskName').value;
+    let description=document.querySelector('#newTaskDescription').value;
+    let status=document.querySelector('#newTaskStatus').value;
+    fetch(apiUrl + '/tasks', {
+        method: 'POST',
+        headers: getApiHeadersWithAuth(),
+        body : JSON.stringify({
+            name: name,
+            description: description,
+            project_id: activeProjectId,
+            status: status
+        })
+    }).then(response => response.json())
+    .then(data => {
+        drawProjects(activeProjectId);
+    });
+}
+
+function deleteProjectTask(itemId) {
+
+    let st=confirm('Are you sure you want to delete this task?');
+    if (!st) {
+        return;
+    }
+    fetch(apiUrl + '/tasks/' + itemId, {
+        method: 'DELETE',
+        headers: getApiHeadersWithAuth(),
+    }).then(response => response.json())
+    .then(data => {
+        drawProjects(activeProjectId);
+    });
+}
 </script>
+
+<div class="modal" tabindex="-1" id="newModalTask">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Task</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label>Name
+        <input type="text" class="form-control" id="newTaskName">
+        </label>
+        <label>Description
+        <input type="text" class="form-control" id="newTaskDescription">
+        </label>
+        <label>Status
+        <select class="form-select" id="newTaskStatus">
+            <option value="todo">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="done">Done</option>
+        </select>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  onclick="createTask(); return true;">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
