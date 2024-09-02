@@ -82,6 +82,7 @@ class ProjectController extends Controller
             || ($user->hasPermission('edit-project')
             && $project->user_id==$user->id)
         ) {
+            $project->load('tasks');
             return response()->json(
                 [
                     'status' => true,
