@@ -18,11 +18,12 @@
             </div>
         </div>
     </div>
+</div>
 <script>
 var activeProjectId;
-Router.set('project', drawProjects);
+Router.set('project', drawTasks);
 
-async function drawProjects(projectId) {
+async function drawTasks(projectId) {
     activeProjectId=projectId;
     await fetch(apiUrl + '/projects/' + projectId, {
         method: 'GET',
@@ -102,20 +103,11 @@ function editTask(itemId, name, description, status) {
         })
     }).then(response => response.json())
     .then(data => {
-        drawProjects(activeProjectId);
+        drawTasks(activeProjectId);
     });
 }
-function hideModal(id) {
-    const modalDom = document.querySelector('#' + id);
-    const modal = new bootstrap.Modal(modalDom, {
-        backdrop: 'static'
-    });
-    modal.hide();
-    modal.close();
-}
-function createTask() {
-    hideModal('newModalTask');
 
+function createTask() {
     let name=document.querySelector('#newTaskName').value;
     let description=document.querySelector('#newTaskDescription').value;
     let status=document.querySelector('#newTaskStatus').value;
@@ -130,7 +122,7 @@ function createTask() {
         })
     }).then(response => response.json())
     .then(data => {
-        drawProjects(activeProjectId);
+        drawTasks(activeProjectId);
     });
 }
 
@@ -145,7 +137,7 @@ function deleteProjectTask(itemId) {
         headers: getApiHeadersWithAuth(),
     }).then(response => response.json())
     .then(data => {
-        drawProjects(activeProjectId);
+        drawTasks(activeProjectId);
     });
 }
 </script>
