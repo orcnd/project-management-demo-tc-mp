@@ -16,3 +16,8 @@ Route::apiResource(
     'projects',
     \App\Http\Controllers\ProjectController::class
 )->middleware('auth:sanctum');
+
+Route::apiResource(
+    'tasks',
+    \App\Http\Controllers\TaskController::class
+)->middleware('auth:sanctum');
