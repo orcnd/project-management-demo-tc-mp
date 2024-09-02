@@ -1,8 +1,15 @@
 <div class="view-pages" id="projectView">
     <div class="contanier">
         <h1 class="projectView_name">Project</h1>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModalTask">New Task</button>
-        <p class="projectView_description">
+        <div class="row">
+            <div class="col">
+                <p class="projectView_description"></p>
+            </div>
+            <div class="col float-end text-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModalTask">New Task</button>
+            </div>
+        </div>
+
         <div class="row projectView_tasks">
             <div class="col-md-4 todo">
                 <h3>To Do</h3>
@@ -43,7 +50,7 @@ async function drawTasks(projectId) {
             let tasks=project.tasks;
             tasks.forEach(function (item) {
                 let html='';
-                html+='<div class="card" id="projectView_task_'+item.id+'">';
+                html+='<div class="card mb-3" id="projectView_task_'+item.id+'" >';
                 html+='<div class="card-body">';
                 html+='<div class="card-title">'+item.name+'</div>';
                 html+='<div class="card-text">'+item.description+'</div>';

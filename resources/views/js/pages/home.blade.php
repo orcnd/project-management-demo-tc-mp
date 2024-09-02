@@ -1,8 +1,14 @@
 <div class="view-pages" id="homeView">
     <div class="contanier">
-        <h1>Welcome<span id="homeView_userName"></span></h1>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModalProject">New
-            Project</button>
+        <div class="row">
+            <div class="col">
+                <h1>Welcome<span id="homeView_userName"></span></h1>
+            </div>
+            <div class="col text-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModalProject">New
+                    Project</button>
+            </div>
+        </div>
         <div class="row homeView_projects"></div>
     </div>
 </div>
