@@ -130,13 +130,13 @@ class Router {
     static set(route, callback) {
         Router.routes[route]=callback;
     }
-    static go(route) {
+    static go(route, params) {
         if (Router.activeRoute && Router.activeRoute==route) {
             return;
         }
         Router.activeRoute=route;
         if (route in Router.routes) {
-            Router.routes[route]();
+            Router.routes[route](params);
         } else {
             Router.routes['404']();
             console.error('Route not found');
