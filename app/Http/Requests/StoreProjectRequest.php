@@ -22,24 +22,6 @@ class StoreProjectRequest extends ApiRequest
     }
 
     /**
-     * Failed auth override
-     *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
-     *
-     * @return never
-     */
-    protected function failedAuthorization()
-    {
-        throw new HttpResponseException(
-            response()->json(
-                [
-                'message' => 'you are not authorized to do this.'
-                ], 403
-            )
-        );
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
