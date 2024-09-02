@@ -8,60 +8,75 @@
 </div>
 
 <script>
-    Router.set('home', drawProjects);
+Router.set('home', drawProjects);
 
-    async function drawProjects() {
-        console.log('drawProjects');
-        if (Auth.user) {
-            document.getElementById('homeView_userName').innerHTML = ' ' + Auth.user.name;
+async function drawProjects() {
+    console.log('drawProjects');
+    if (Auth.user) {
+        document.getElementById('homeView_userName').innerHTML = ' ' + Auth.user.name;
+    }
+
+    await fetch(apiUrl + '/projects', {
+            method: 'GET',
+            headers: getApiHeadersWithAuth(),
+        }).then(response => response.json())
+        .then(data => {
+            console.log('pll', data);
+            if (data.status) {
+                let projects = data.data;
+                let html = '';
+                projects.forEach(function(item) {
+                    html += '<div class="col-md-3 mb-3 ">';
+                    html += '<div class="card">';
+                    html += '<div class="card-body">';
+                    html += '<div class="card-title">' + item.name + '</div>';
+                    html += '<div class="card-text">' + item.description + '</div>';
+                    html += '<a class="card-link" href="#" onclick="Router.go(\'project\',' + item
+                        .id + '); return false;">Go to project</a>';
+                    html += '<a class="card-link text-danger" href="#" onclick="deleteProject('+ item.id +'); return false;">Delete</a>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+                document.querySelector('#homeView .homeView_projects').innerHTML = html;
+            }
+        });
+    view(
+        'Home',
+        document.getElementById('homeView').innerHTML
+    );
+}
+
+function createProject() {
+    let name = document.querySelector('#newProjectName').value;
+    let description = document.querySelector('#newProjectDescription').value;
+    fetch(apiUrl + '/projects', {
+            method: 'POST',
+            headers: getApiHeadersWithAuth(),
+            body: JSON.stringify({
+                name: name,
+                description: description,
+            })
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data);
+            drawProjects();
+        });
+}
+
+function deleteProject(itemId) {
+    let st=confirm('Are you sure you want to delete this project?');
+    if (!st) {
+        return;
         }
-
-        await fetch(apiUrl + '/projects', {
-                method: 'GET',
-                headers: getApiHeadersWithAuth(),
-            }).then(response => response.json())
-            .then(data => {
-                console.log('pll', data);
-                if (data.status) {
-                    let projects = data.data;
-                    let html = '';
-                    projects.forEach(function(item) {
-                        html += '<div class="col-md-3 mb-3 ">';
-                        html += '<div class="card">';
-                        html += '<div class="card-body">';
-                        html += '<div class="card-title">' + item.name + '</div>';
-                        html += '<div class="card-text">' + item.description + '</div>';
-                        html += '<a class="card-link" href="#" onclick="Router.go(\'project\',' + item
-                            .id + '); return false;">Go to project</a>';
-                        html += '</div>';
-                        html += '</div>';
-                        html += '</div>';
-                    });
-                    document.querySelector('#homeView .homeView_projects').innerHTML = html;
-                }
-            });
-        view(
-            'Home',
-            document.getElementById('homeView').innerHTML
-        );
-    }
-
-    function createProject() {
-        let name = document.querySelector('#newProjectName').value;
-        let description = document.querySelector('#newProjectDescription').value;
-        fetch(apiUrl + '/projects', {
-                method: 'POST',
-                headers: getApiHeadersWithAuth(),
-                body: JSON.stringify({
-                    name: name,
-                    description: description,
-                })
-            }).then(response => response.json())
-            .then(data => {
-                console.log(data);
-                drawProjects();
-            });
-    }
+    fetch(apiUrl + '/projects/' + itemId, {
+        method: 'DELETE',
+        headers: getApiHeadersWithAuth(),
+    }).then(response => response.json())
+    .then(data => {
+        drawProjects();
+    });
+}
 </script>
 
 <div class="modal" tabindex="-1" id="newModalProject">
