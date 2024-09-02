@@ -16,8 +16,31 @@ class ProjectController extends Controller
      */
     public function index():mixed
     {
+        if (!Auth::user()->hasPermission('edit-any-project')
+            && !Auth::user()->hasPermission('edit-project')
+        ) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'you are not authorized to do this.'
+                ]
+            );
+        }
+        if (Auth::user()->hasPermission('edit-any-project')) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'data' => Project::orderByDesc('id')->get()
+                ]
+            );
+        }
+
         return response()->json(
-            Project::orderByDesc('id')->get()
+            [
+                'status' => true,
+                'data' =>Project::orderByDesc('id')
+                    ->where('user_id', Auth::user()->id)->get()
+            ]
         );
     }
 

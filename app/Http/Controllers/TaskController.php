@@ -6,7 +6,7 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Project;
 class TaskController extends Controller
 {
     /**
@@ -16,8 +16,34 @@ class TaskController extends Controller
      */
     public function index():mixed
     {
+        if (!isset($_GET['project_id'])) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'project id needs to be given'
+                ]
+            );
+        }
+        $project_id=intval($_GET['project_id']);
+        $ownedProjects=Project::where('user_id', Auth::user()->id)->pluck('id')->toArray();
+
+        if (!Auth::user()->hasPermission('edit-any-task')
+            && !(Auth::user()->hasPermission('edit-task') && in_array($project_id, $ownedProjects))
+        ) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'you are not authorized to do this.'
+                ]
+            );
+        }
+
         return response()->json(
-            Task::orderByDesc('id')->get()
+            [
+                'status' => true,
+                'data' => Task::orderByDesc('id')
+                    ->where('project_id', $project_id)->get()
+            ]
         );
     }
 
