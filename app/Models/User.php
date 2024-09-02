@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -57,5 +58,26 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Check User has permission
+     *
+     * @param string $action action
+     *
+     * @return bool
+     */
+    public function hasPermission(string $action)
+    {
+        return DB::table('permissions')
+            ->join(
+                'permission_role',
+                'permissions.id', '=',
+                'permission_role.permission_id'
+            )
+            ->join('role_user', 'permission_role.role_id', '=', 'role_user.role_id')
+            ->where('permissions.title', $action)
+            ->where('role_user.user_id', $this->id)
+            ->exists();
     }
 }
