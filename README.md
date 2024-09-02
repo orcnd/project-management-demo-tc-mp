@@ -15,7 +15,7 @@ This project is a simple Laravel application that allows you to manage your task
 5. Optionally you can use `./vendor/bin/sail up` to run the project with Docker
 
 
-## capabilities
+## Capabilities
 - Login and Register
 - Role based permissions
 - Create a new project
