@@ -33,3 +33,14 @@ This project is a simple Laravel application that allows you to manage your task
 
 - Login
 ![Home](https://github.com/orcnd/project-management-demo-tc-mp/blob/main/screenshots/ss3.png?raw=true)
+
+## Design choices
+I prefered to create my own JS router and renderer mechanism.
+Because i wanted to make it fun. Goal was achive React router style navigation.
+But i also do not want to use something like JSX. I want to keep HTML and CSS as much as possible.
+I also do not want to make something that needs compiling. I don't need to compile my backend why i should need to compile my frontend.
+
+I also avoided to use Livewire because i do not like frontend codes that is not in my control.
+
+Backend is basic Laravel. Used apiResources, form requests.
+Only custom thing is roles and permissions.
