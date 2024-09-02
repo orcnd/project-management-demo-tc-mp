@@ -22,7 +22,8 @@ class ProjectController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store
+     * @param \App\Http\Requests\StoreProjectRequest $request request
      *
      * @return mixed
      */
