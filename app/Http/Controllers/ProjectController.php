@@ -29,7 +29,7 @@ class ProjectController extends Controller
         if (Auth::user()->hasPermission('edit-any-project')) {
             return response()->json(
                 [
-                    'status' => false,
+                    'status' => true,
                     'data' => Project::orderByDesc('id')->get()
                 ]
             );
